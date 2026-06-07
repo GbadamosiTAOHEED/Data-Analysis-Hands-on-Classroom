@@ -1,0 +1,577 @@
+
+<h2 class="sr-only">Hands-on Excel data analysis course for beginners — 6 interactive lessons with a live dataset, formula practice, and mini quizzes.</h2>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.wrap{padding:1rem 0}
+.header{margin-bottom:1.5rem}
+.header h1{font-size:20px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+.header p{font-size:14px;color:var(--color-text-secondary);line-height:1.5}
+.progress-bar{height:6px;background:var(--color-background-secondary);border-radius:3px;margin:1rem 0;overflow:hidden}
+.progress-fill{height:100%;background:#1D9E75;border-radius:3px;transition:width 0.4s ease}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem}
+.tab{padding:7px 14px;font-size:13px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);color:var(--color-text-secondary);cursor:pointer;transition:all 0.15s;font-weight:400}
+.tab:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+.tab.active{background:#E1F5EE;border-color:#1D9E75;color:#085041;font-weight:500}
+.tab.done{border-color:#1D9E75;color:#0F6E56}
+.tab.done::after{content:" ✓";font-size:11px}
+.lesson{display:none;animation:fadeIn 0.2s ease}
+.lesson.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.lesson-header{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.lesson-badge{width:40px;height:40px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.lesson-title{font-size:16px;font-weight:500;color:var(--color-text-primary)}
+.lesson-sub{font-size:13px;color:var(--color-text-secondary);margin-top:2px}
+.section-label{font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-tertiary);margin:1.25rem 0 0.5rem}
+.explain-box{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;font-size:14px;color:var(--color-text-primary);line-height:1.7;margin-bottom:1rem}
+.explain-box b{font-weight:500}
+.tip{background:#E1F5EE;border-radius:var(--border-radius-md);padding:0.75rem 1rem;font-size:13px;color:#085041;line-height:1.6;margin-bottom:1rem;display:flex;gap:8px}
+.warn{background:#FAEEDA;border-radius:var(--border-radius-md);padding:0.75rem 1rem;font-size:13px;color:#633806;line-height:1.6;margin-bottom:1rem;display:flex;gap:8px}
+.step{display:flex;gap:12px;margin-bottom:0.75rem;align-items:flex-start}
+.step-num{width:24px;height:24px;border-radius:50%;background:#1D9E75;color:#fff;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:14px;color:var(--color-text-primary);line-height:1.6}
+.step-text code{background:var(--color-background-secondary);padding:1px 6px;border-radius:4px;font-family:var(--font-mono);font-size:13px;color:var(--color-text-primary)}
+
+/* Dataset table */
+.table-wrap{overflow-x:auto;margin-bottom:1rem;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--color-background-secondary);color:var(--color-text-secondary);font-weight:500;padding:8px 12px;text-align:left;border-bottom:0.5px solid var(--color-border-tertiary)}
+td{padding:7px 12px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--color-background-secondary)}
+.highlight-col{background:#E1F5EE!important;color:#085041}
+
+/* Formula practice */
+.formula-box{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:1rem;margin-bottom:1rem;background:var(--color-background-primary)}
+.formula-label{font-size:13px;color:var(--color-text-secondary);margin-bottom:6px}
+.formula-display{font-family:var(--font-mono);font-size:15px;font-weight:500;color:#0F6E56;background:#E1F5EE;padding:10px 14px;border-radius:var(--border-radius-md);margin-bottom:8px;letter-spacing:0.02em}
+.formula-desc{font-size:13px;color:var(--color-text-secondary);line-height:1.5}
+.formula-desc b{color:var(--color-text-primary);font-weight:500}
+
+/* Try it zone */
+.try-zone{border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:1rem;margin-bottom:1rem}
+.try-label{font-size:13px;color:var(--color-text-secondary);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.try-label i{font-size:15px}
+.input-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.input-row label{font-size:13px;color:var(--color-text-secondary);min-width:80px}
+input[type=number],input[type=text]{width:110px;padding:6px 10px;font-size:14px}
+.result-display{font-size:15px;font-weight:500;color:#0F6E56;padding:8px 12px;background:#E1F5EE;border-radius:var(--border-radius-md);display:inline-block;min-width:80px;text-align:center;min-height:36px}
+.btn{padding:8px 16px;font-size:13px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer;transition:all 0.15s}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.btn-primary:hover{background:#9FE1CB}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:0.5px solid var(--color-border-tertiary)}
+
+/* Quiz */
+.quiz-q{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:0.75rem;line-height:1.6}
+.quiz-options{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
+.quiz-opt{padding:9px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);font-size:14px;cursor:pointer;color:var(--color-text-primary);background:var(--color-background-primary);text-align:left;transition:all 0.15s}
+.quiz-opt:hover{border-color:var(--color-border-secondary);background:var(--color-background-secondary)}
+.quiz-opt.correct{background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.quiz-opt.wrong{background:#FCEBEB;border-color:#E24B4A;color:#501313}
+.quiz-feedback{font-size:13px;padding:8px 12px;border-radius:var(--border-radius-md);margin-bottom:0.75rem;line-height:1.5}
+.quiz-feedback.ok{background:#E1F5EE;color:#085041}
+.quiz-feedback.bad{background:#FCEBEB;color:#501313}
+
+/* Chart */
+.chart-area{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;margin-bottom:1rem;position:relative}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.bar-label{font-size:12px;color:var(--color-text-secondary);width:70px;text-align:right;flex-shrink:0}
+.bar-track{flex:1;height:22px;background:var(--color-background-primary);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;background:#1D9E75;transition:width 0.6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.bar-val{font-size:11px;font-weight:500;color:#fff}
+.chart-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:0.75rem}
+
+/* Checklist */
+.checklist{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem}
+.check-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);cursor:pointer;font-size:13px;color:var(--color-text-primary);background:var(--color-background-primary);transition:all 0.15s}
+.check-item:hover{background:var(--color-background-secondary)}
+.check-item.checked{border-color:#1D9E75;background:#E1F5EE;color:#085041}
+.check-icon{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;font-size:11px}
+.check-item.checked .check-icon{background:#1D9E75;border-color:#1D9E75;color:#fff}
+</style>
+
+<div class="wrap">
+<div class="header">
+  <h1><i class="ti ti-table" aria-hidden="true" style="font-size:20px;vertical-align:-3px;margin-right:6px;color:#1D9E75"></i>Excel for Data Analysis — Hands-On Lab</h1>
+  <p>6 lessons · Real dataset · Practice exercises · Mini quizzes &nbsp;|&nbsp; <b>Instructor: Taoheed Gbadamosi Alade</b></p>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="prog" style="width:16.6%"></div></div>
+<p style="font-size:12px;color:var(--color-text-tertiary);margin-bottom:1rem" id="prog-label">Lesson 1 of 6</p>
+
+<div class="tabs" id="tabs">
+  <button class="tab active" onclick="goTo(0)">1 · The Dataset</button>
+  <button class="tab" onclick="goTo(1)">2 · Formatting</button>
+  <button class="tab" onclick="goTo(2)">3 · Formulas</button>
+  <button class="tab" onclick="goTo(3)">4 · Sort & Filter</button>
+  <button class="tab" onclick="goTo(4)">5 · Charts</button>
+  <button class="tab" onclick="goTo(5)">6 · Final Task</button>
+</div>
+
+<!-- ══════════════ LESSON 1 ══════════════ -->
+<div class="lesson active" id="l0">
+  <div class="lesson-header">
+    <div class="lesson-badge">📋</div>
+    <div>
+      <div class="lesson-title">Meet your dataset — Sales Records 2024</div>
+      <div class="lesson-sub">We'll work with this 10-row sales table throughout all 6 lessons.</div>
+    </div>
+  </div>
+
+  <div class="explain-box">
+    In real data analysis, you always start by <b>understanding your data</b> before touching any formula. Look at the table below. It has <b>6 columns</b> and <b>10 sales records</b>. Each row is one transaction made by a sales rep.
+  </div>
+
+  <div class="section-label">Your dataset (type this into Excel — Row 1 = headers)</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Row</th><th>A · Rep Name</th><th>B · Region</th><th>C · Product</th><th>D · Units Sold</th><th>E · Unit Price (₦)</th><th>F · Total Sales (₦)</th></tr>
+      <tr><td style="color:var(--color-text-tertiary);font-size:12px">2</td><td>Amaka</td><td>Lagos</td><td>Laptop</td><td>5</td><td>320,000</td><td><i>calculate</i></td></tr>
+      <tr><td style="color:var(--color-text-tertiary);font-size:12px">3</td><td>Bola</td><td>Abuja</td><td>Phone</td><td>12</td><td>85,000</td><td><i>calculate</i></td></tr>
+      <tr><td style="color:var(--color-text-tertiary);font-size:12px">4</td><td>Chidi</td><td>PH</td><td>Tablet</td><td>8</td><td>150,000</td><td><i>calculate</i></td></tr>
+      <tr><td style="color:var(--color-text-tertiary);font-size:12px">5</td><td>Dami</td><td>Lagos</td><td>Laptop</td><td>3</td><td>320,000</td><td><i>calculate</i></td></tr>
+      <tr><td style="color:var(--color-text-tertiary);font-size:12px">6</td><td>Emeka</td><td>Abuja</td><td>Phone</td><td>20</td><td>85,000</td><td><i>calculate</i></td></tr>
+      <tr><td style="color:var(--color-text-tertiary);font-size:12px">7</td><td>Fatima</td><td>Kano</td><td>Printer</td><td>4</td><td>95,000</td><td><i>calculate</i></td></tr>
+      <tr><td style="color:var(--color-text-tertiary);font-size:12px">8</td><td>Grace</td><td>Lagos</td><td>Phone</td><td>15</td><td>85,000</td><td><i>calculate</i></td></tr>
+      <tr><td style="color:var(--color-text-tertiary);font-size:12px">9</td><td>Hassan</td><td>Kano</td><td>Tablet</td><td>6</td><td>150,000</td><td><i>calculate</i></td></tr>
+      <tr><td style="color:var(--color-text-tertiary);font-size:12px">10</td><td>Ifeoma</td><td>PH</td><td>Printer</td><td>9</td><td>95,000</td><td><i>calculate</i></td></tr>
+      <tr><td style="color:var(--color-text-tertiary);font-size:12px">11</td><td>James</td><td>Abuja</td><td>Laptop</td><td>7</td><td>320,000</td><td><i>calculate</i></td></tr>
+    </table>
+  </div>
+
+  <div class="tip"><i class="ti ti-bulb" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px"></i> Column F (Total Sales) is <b>empty on purpose</b> — you will calculate it with a formula in Lesson 3. Leave it blank for now.</div>
+
+  <div class="section-label">Your task for this lesson</div>
+  <div class="checklist" id="cl1">
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div>Open a new Excel workbook (File → New → Blank Workbook)</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div>Click cell A1 and type the header: <b>Rep Name</b></div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div>Fill in all 6 column headers across row 1 (A1 to F1)</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div>Enter all 10 rows of data (rows 2–11) — leave column F empty</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div>Save the file: File → Save As → name it <b>Sales_Analysis_2024</b></div>
+  </div>
+
+  <div class="warn"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px"></i> Never leave spaces in numbers — type <b>320000</b> not <b>320 000</b>. Excel treats spaced numbers as text and formulas will break.</div>
+
+  <div class="nav-row">
+    <span style="font-size:13px;color:var(--color-text-tertiary)">Start here</span>
+    <button class="btn btn-primary" onclick="goTo(1)">Next: Formatting <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+</div>
+
+<!-- ══════════════ LESSON 2 ══════════════ -->
+<div class="lesson" id="l1">
+  <div class="lesson-header">
+    <div class="lesson-badge">🎨</div>
+    <div>
+      <div class="lesson-title">Data types & cell formatting</div>
+      <div class="lesson-sub">Format your data correctly so Excel can calculate it properly.</div>
+    </div>
+  </div>
+
+  <div class="explain-box">
+    Raw data entered in Excel has no "format" by default — it's just generic. You must tell Excel: <b>is this a number? Currency? Text?</b> If column E (Unit Price) is stored as text, the SUM formula won't work. Formatting is step one of any clean analysis.
+  </div>
+
+  <div class="section-label">The 4 formats you'll use today</div>
+
+  <div class="formula-box">
+    <div class="formula-label">Format 1</div>
+    <div class="formula-display">Text (General)</div>
+    <div class="formula-desc">Use for names and categories. Columns <b>A (Rep Name), B (Region), C (Product)</b> should stay as General/Text. Never apply number formatting to names.</div>
+  </div>
+
+  <div class="formula-box">
+    <div class="formula-label">Format 2</div>
+    <div class="formula-display">Number (0 decimal places)</div>
+    <div class="formula-desc">Use for counts. Column <b>D (Units Sold)</b> — select D2:D11, press Ctrl+1, choose Number, set decimals to 0.</div>
+  </div>
+
+  <div class="formula-box">
+    <div class="formula-label">Format 3</div>
+    <div class="formula-display">Accounting / Currency</div>
+    <div class="formula-desc">Use for money. Columns <b>E (Unit Price) and F (Total Sales)</b> — select E2:E11, press Ctrl+1, choose Accounting, set symbol to ₦ or leave as None.</div>
+  </div>
+
+  <div class="formula-box">
+    <div class="formula-label">Format 4</div>
+    <div class="formula-display">Bold header row</div>
+    <div class="formula-desc">Select row 1 (click the "1" on the left side), press <b>Ctrl+B</b> to bold all headers. Then Home → Fill Color → choose a light green or blue shade to highlight your header row.</div>
+  </div>
+
+  <div class="section-label">Step-by-step: format column E (Unit Price)</div>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Click cell <code>E2</code></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Hold <code>Shift</code> and click <code>E11</code> — you've selected the whole column range</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Press <code>Ctrl + 1</code> to open Format Cells dialog</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Click the <b>Number</b> tab → choose <b>Accounting</b></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Set Decimal places to <code>0</code>, click OK</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Repeat for column F (F2:F11) after you calculate it in Lesson 3</div></div>
+
+  <div class="tip"><i class="ti ti-bulb" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px"></i> <b>Shortcut:</b> Select a range and press <code>Ctrl + Shift + $</code> to instantly apply currency formatting.</div>
+
+  <div class="section-label">Mini quiz — check your understanding</div>
+  <div class="quiz-q" id="q2q">You entered the sales rep name "Amaka" in cell A2. Which format should A2 be?</div>
+  <div class="quiz-options">
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q2')">Accounting</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'correct','q2')">General / Text</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q2')">Number</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q2')">Date</button>
+  </div>
+  <div class="quiz-feedback" id="q2fb" style="display:none"></div>
+
+  <div class="nav-row">
+    <button class="btn" onclick="goTo(0)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+    <button class="btn btn-primary" onclick="goTo(2)">Next: Formulas <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+</div>
+
+<!-- ══════════════ LESSON 3 ══════════════ -->
+<div class="lesson" id="l2">
+  <div class="lesson-header">
+    <div class="lesson-badge">🧮</div>
+    <div>
+      <div class="lesson-title">Writing formulas — the heart of Excel</div>
+      <div class="lesson-sub">Calculate Total Sales, then summarise the whole dataset.</div>
+    </div>
+  </div>
+
+  <div class="explain-box">
+    Every formula in Excel starts with <b>=</b>. Excel then reads the rest as a calculation. You'll use <b>5 essential formulas</b> on your dataset right now — each one answers a real business question.
+  </div>
+
+  <div class="section-label">Formula 1 — Multiplication: fill column F (Total Sales)</div>
+  <div class="formula-box">
+    <div class="formula-display">=D2*E2</div>
+    <div class="formula-desc"><b>What it does:</b> Multiplies Units Sold (D2) × Unit Price (E2) to get the total revenue for that row.<br><br><b>How to use it:</b> Click cell F2, type <code>=D2*E2</code>, press Enter. Then click F2 again → hover over the bottom-right corner until you see a small + sign → drag it down to F11. Excel copies the formula automatically for each row.</div>
+  </div>
+
+  <div class="section-label">Try it — calculate total sales live</div>
+  <div class="try-zone">
+    <div class="try-label"><i class="ti ti-calculator" aria-hidden="true"></i> Simulate =D*E for any row</div>
+    <div class="input-row">
+      <label>Units sold</label>
+      <input type="number" id="units" value="5" min="1" oninput="calcTotal()">
+      <label style="min-width:auto">× Price (₦)</label>
+      <input type="number" id="price" value="320000" min="1" oninput="calcTotal()">
+      <span style="font-size:13px;color:var(--color-text-secondary)">=</span>
+      <div class="result-display" id="totalRes">₦1,600,000</div>
+    </div>
+    <div style="font-size:12px;color:var(--color-text-tertiary)">Change the numbers — Excel does the same thing in your spreadsheet.</div>
+  </div>
+
+  <div class="section-label">Formula 2 — SUM: total revenue for all reps</div>
+  <div class="formula-box">
+    <div class="formula-display">=SUM(F2:F11)</div>
+    <div class="formula-desc"><b>What it does:</b> Adds up every number in column F from row 2 to row 11.<br><b>Where to put it:</b> Click an empty cell below your data, e.g. <code>F13</code>. Label it in E13: type "Total Revenue".</div>
+  </div>
+
+  <div class="section-label">Formula 3 — AVERAGE: average units sold per rep</div>
+  <div class="formula-box">
+    <div class="formula-display">=AVERAGE(D2:D11)</div>
+    <div class="formula-desc"><b>What it does:</b> Calculates the mean number of units sold across all 10 reps.<br><b>Where to put it:</b> Cell <code>D13</code>. Label it in C13: "Avg Units".</div>
+  </div>
+
+  <div class="section-label">Formula 4 — MAX and MIN: best and lowest sales</div>
+  <div class="formula-box">
+    <div class="formula-display">=MAX(F2:F11) &nbsp;&nbsp;&nbsp;&nbsp; =MIN(F2:F11)</div>
+    <div class="formula-desc"><b>MAX</b> finds the highest Total Sales value (best performer). <b>MIN</b> finds the lowest.<br><b>Where to put them:</b> <code>F14</code> for MAX, <code>F15</code> for MIN. Label them in column E.</div>
+  </div>
+
+  <div class="section-label">Formula 5 — COUNT: how many reps in the dataset</div>
+  <div class="formula-box">
+    <div class="formula-display">=COUNTA(A2:A11)</div>
+    <div class="formula-desc"><b>What it does:</b> Counts non-empty cells — tells you there are 10 reps. Use COUNTA (not COUNT) for text columns.<br><b>Where to put it:</b> <code>A13</code>. Label it in A12: "Total Reps".</div>
+  </div>
+
+  <div class="section-label">See the answers — your column F should look like this</div>
+  <div class="table-wrap">
+    <table>
+      <tr><th>Rep</th><th>Units</th><th>Unit Price</th><th class="highlight-col">Total Sales (=D×E)</th></tr>
+      <tr><td>Amaka</td><td>5</td><td>320,000</td><td class="highlight-col">1,600,000</td></tr>
+      <tr><td>Bola</td><td>12</td><td>85,000</td><td class="highlight-col">1,020,000</td></tr>
+      <tr><td>Chidi</td><td>8</td><td>150,000</td><td class="highlight-col">1,200,000</td></tr>
+      <tr><td>Dami</td><td>3</td><td>320,000</td><td class="highlight-col">960,000</td></tr>
+      <tr><td>Emeka</td><td>20</td><td>85,000</td><td class="highlight-col">1,700,000</td></tr>
+      <tr><td>Fatima</td><td>4</td><td>95,000</td><td class="highlight-col">380,000</td></tr>
+      <tr><td>Grace</td><td>15</td><td>85,000</td><td class="highlight-col">1,275,000</td></tr>
+      <tr><td>Hassan</td><td>6</td><td>150,000</td><td class="highlight-col">900,000</td></tr>
+      <tr><td>Ifeoma</td><td>9</td><td>95,000</td><td class="highlight-col">855,000</td></tr>
+      <tr><td>James</td><td>7</td><td>320,000</td><td class="highlight-col">2,240,000</td></tr>
+    </table>
+  </div>
+
+  <div class="section-label">Mini quiz</div>
+  <div class="quiz-q">Which formula gives you the total of all values in F2 to F11?</div>
+  <div class="quiz-options">
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q3')">= TOTAL(F2:F11)</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q3')">= ADD(F2,F11)</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'correct','q3')">= SUM(F2:F11)</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q3')">= COUNT(F2:F11)</button>
+  </div>
+  <div class="quiz-feedback" id="q3fb" style="display:none"></div>
+
+  <div class="nav-row">
+    <button class="btn" onclick="goTo(1)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+    <button class="btn btn-primary" onclick="goTo(3)">Next: Sort & Filter <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+</div>
+
+<!-- ══════════════ LESSON 4 ══════════════ -->
+<div class="lesson" id="l3">
+  <div class="lesson-header">
+    <div class="lesson-badge">🔍</div>
+    <div>
+      <div class="lesson-title">Sort & Filter — find what matters</div>
+      <div class="lesson-sub">Rank your reps and isolate specific regions or products.</div>
+    </div>
+  </div>
+
+  <div class="explain-box">
+    Sorting and filtering turn a messy list into an <b>organised story</b>. Sort to rank your top performers. Filter to answer questions like "show me only Lagos reps" or "only Phone sales."
+  </div>
+
+  <div class="section-label">Part A — Sorting</div>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Click any cell inside your data (e.g. <code>F2</code>)</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Go to the <b>Data</b> tab on the ribbon at the top</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Click <b>Sort</b> — a dialog box opens</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Under "Sort by" choose <b>Column F (Total Sales)</b></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Under "Order" choose <b>Largest to Smallest</b></div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Click OK — your reps now rank from best to worst performance</div></div>
+
+  <div class="tip"><i class="ti ti-bulb" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px"></i> After sorting, James should appear first (₦2,240,000) and Fatima last (₦380,000).</div>
+
+  <div class="section-label">Sorted result — what you should see</div>
+  <div class="chart-area">
+    <div class="chart-title">Total Sales per Rep — sorted highest to lowest (₦ thousands)</div>
+    <div class="bar-row"><div class="bar-label">James</div><div class="bar-track"><div class="bar-fill" style="width:100%"><div class="bar-val">2,240</div></div></div></div>
+    <div class="bar-row"><div class="bar-label">Emeka</div><div class="bar-track"><div class="bar-fill" style="width:76%"><div class="bar-val">1,700</div></div></div></div>
+    <div class="bar-row"><div class="bar-label">Amaka</div><div class="bar-track"><div class="bar-fill" style="width:71%"><div class="bar-val">1,600</div></div></div></div>
+    <div class="bar-row"><div class="bar-label">Grace</div><div class="bar-track"><div class="bar-fill" style="width:57%"><div class="bar-val">1,275</div></div></div></div>
+    <div class="bar-row"><div class="bar-label">Chidi</div><div class="bar-track"><div class="bar-fill" style="width:54%"><div class="bar-val">1,200</div></div></div></div>
+    <div class="bar-row"><div class="bar-label">Bola</div><div class="bar-track"><div class="bar-fill" style="width:46%"><div class="bar-val">1,020</div></div></div></div>
+    <div class="bar-row"><div class="bar-label">Dami</div><div class="bar-track"><div class="bar-fill" style="width:43%"><div class="bar-val">960</div></div></div></div>
+    <div class="bar-row"><div class="bar-label">Hassan</div><div class="bar-track"><div class="bar-fill" style="width:40%"><div class="bar-val">900</div></div></div></div>
+    <div class="bar-row"><div class="bar-label">Ifeoma</div><div class="bar-track"><div class="bar-fill" style="width:38%"><div class="bar-val">855</div></div></div></div>
+    <div class="bar-row"><div class="bar-label">Fatima</div><div class="bar-track"><div class="bar-fill" style="width:17%"><div class="bar-val">380</div></div></div></div>
+  </div>
+
+  <div class="section-label">Part B — Filtering</div>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Click any cell in row 1 (your header row)</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Go to <b>Data → Filter</b> — small dropdown arrows appear on each header</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Click the dropdown arrow on <b>Column B (Region)</b></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Uncheck "Select All", then tick <b>Lagos only</b>, click OK</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Only Lagos rows show: Amaka, Dami, Grace — the rest are hidden, not deleted</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">To show all rows again: Data → Filter → Clear (or click the arrow and tick "Select All")</div></div>
+
+  <div class="section-label">Mini quiz</div>
+  <div class="quiz-q">After applying a filter, the hidden rows are...?</div>
+  <div class="quiz-options">
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q4')">Permanently deleted from your file</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'correct','q4')">Temporarily hidden — they come back when you clear the filter</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q4')">Moved to a different sheet</button>
+  </div>
+  <div class="quiz-feedback" id="q4fb" style="display:none"></div>
+
+  <div class="nav-row">
+    <button class="btn" onclick="goTo(2)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+    <button class="btn btn-primary" onclick="goTo(4)">Next: Charts <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+</div>
+
+<!-- ══════════════ LESSON 5 ══════════════ -->
+<div class="lesson" id="l4">
+  <div class="lesson-header">
+    <div class="lesson-badge">📊</div>
+    <div>
+      <div class="lesson-title">Create your first chart</div>
+      <div class="lesson-sub">Turn your numbers into a visual story that anyone can understand.</div>
+    </div>
+  </div>
+
+  <div class="explain-box">
+    Charts make your analysis <b>communicate instantly</b>. A table of 10 rows takes 30 seconds to read. A bar chart tells the same story in 3 seconds. We'll build two charts: one comparing total sales per rep, and one showing sales by product.
+  </div>
+
+  <div class="section-label">Chart 1 — Clustered Bar: Sales by Rep</div>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Hold <code>Ctrl</code> and select column A (A1:A11) — this is your rep names</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Still holding <code>Ctrl</code>, also select column F (F1:F11) — total sales</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Go to <b>Insert</b> tab → click <b>Bar Chart</b> → choose <b>Clustered Bar</b></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">A chart appears on your sheet — click on the chart title and rename it: <b>"Total Sales by Rep"</b></div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Right-click the chart → <b>Format Chart Area</b> → choose a clean background colour</div></div>
+
+  <div class="tip"><i class="ti ti-bulb" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px"></i> <b>Which chart for which data?</b> Use Bar/Column to compare categories. Use Line for trends over time. Use Pie/Doughnut for proportions.</div>
+
+  <div class="section-label">Pick the right chart — interactive guide</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1rem">
+    <div style="padding:12px;border-radius:var(--border-radius-md);border:0.5px solid #1D9E75;background:#E1F5EE;text-align:center">
+      <i class="ti ti-chart-bar" style="font-size:24px;color:#0F6E56" aria-hidden="true"></i>
+      <p style="font-size:12px;font-weight:500;color:#085041;margin-top:6px">Bar / Column</p>
+      <p style="font-size:11px;color:#0F6E56;margin-top:3px">Compare categories</p>
+    </div>
+    <div style="padding:12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);text-align:center">
+      <i class="ti ti-chart-line" style="font-size:24px;color:var(--color-text-secondary)" aria-hidden="true"></i>
+      <p style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-top:6px">Line</p>
+      <p style="font-size:11px;color:var(--color-text-secondary);margin-top:3px">Trends over time</p>
+    </div>
+    <div style="padding:12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);text-align:center">
+      <i class="ti ti-chart-donut" style="font-size:24px;color:var(--color-text-secondary)" aria-hidden="true"></i>
+      <p style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-top:6px">Pie / Doughnut</p>
+      <p style="font-size:11px;color:var(--color-text-secondary);margin-top:3px">Proportions / shares</p>
+    </div>
+    <div style="padding:12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);text-align:center">
+      <i class="ti ti-chart-dots" style="font-size:24px;color:var(--color-text-secondary)" aria-hidden="true"></i>
+      <p style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-top:6px">Scatter</p>
+      <p style="font-size:11px;color:var(--color-text-secondary);margin-top:3px">Relationship between variables</p>
+    </div>
+  </div>
+
+  <div class="section-label">Chart 2 — Doughnut: Sales share by Product</div>
+  <div class="explain-box">
+    On a <b>new area of your sheet</b>, create a small summary table of sales by product. Type it manually:<br><br>
+    &nbsp;&nbsp;<b>H1:</b> Product &nbsp;&nbsp; <b>I1:</b> Total (₦)<br>
+    &nbsp;&nbsp;<b>H2:</b> Laptop &nbsp;&nbsp; <b>I2:</b> =D2*E2+D5*E5+D11*E11 &nbsp; (Amaka + Dami + James)<br>
+    &nbsp;&nbsp;<b>H3:</b> Phone &nbsp;&nbsp;&nbsp; <b>I3:</b> =D3*E3+D6*E6+D8*E8<br>
+    &nbsp;&nbsp;<b>H4:</b> Tablet &nbsp;&nbsp; <b>I4:</b> =D4*E4+D9*E9<br>
+    &nbsp;&nbsp;<b>H5:</b> Printer &nbsp; <b>I5:</b> =D7*E7+D10*E10<br><br>
+    Then select H1:I5 → Insert → Doughnut Chart. This shows each product's share of total revenue.
+  </div>
+
+  <div class="section-label">Mini quiz</div>
+  <div class="quiz-q">You want to show how monthly revenue changed over 12 months. Which chart type is best?</div>
+  <div class="quiz-options">
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q5')">Pie chart</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'correct','q5')">Line chart</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q5')">Scatter diagram</button>
+    <button class="quiz-opt" onclick="checkQuiz(this,'wrong','q5')">Bar chart</button>
+  </div>
+  <div class="quiz-feedback" id="q5fb" style="display:none"></div>
+
+  <div class="nav-row">
+    <button class="btn" onclick="goTo(3)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+    <button class="btn btn-primary" onclick="goTo(5)">Final Task <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+  </div>
+</div>
+
+<!-- ══════════════ LESSON 6 ══════════════ -->
+<div class="lesson" id="l5">
+  <div class="lesson-header">
+    <div class="lesson-badge">🏆</div>
+    <div>
+      <div class="lesson-title">Final task — build your analysis report</div>
+      <div class="lesson-sub">Apply everything you've learned in one complete exercise.</div>
+    </div>
+  </div>
+
+  <div class="explain-box">
+    This is your <b>capstone task</b>. Open your Sales_Analysis_2024 file and complete all the steps below. When you're done, you'll have a professional mini data analysis report — ready to share with anyone.
+  </div>
+
+  <div class="section-label">Your 10-step challenge — tick each one off as you complete it</div>
+  <div class="checklist" id="cl6">
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><b>Step 1:</b> &nbsp;Column F has the formula =D*E for all 10 rows (no blanks)</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><b>Step 2:</b> &nbsp;Column E and F are formatted as Accounting (currency)</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><b>Step 3:</b> &nbsp;Row 1 is bolded and has a background colour</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><b>Step 4:</b> &nbsp;Cell F13 contains =SUM(F2:F11) labelled "Total Revenue" in E13</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><b>Step 5:</b> &nbsp;Cell D13 contains =AVERAGE(D2:D11) labelled "Avg Units" in C13</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><b>Step 6:</b> &nbsp;You know which rep had the MAX sales and which had the MIN</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><b>Step 7:</b> &nbsp;Data is sorted by Total Sales (largest to smallest)</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><b>Step 8:</b> &nbsp;You applied a filter for "Lagos" and can describe what you see</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><b>Step 9:</b> &nbsp;A bar chart titled "Total Sales by Rep" is on the sheet</div>
+    <div class="check-item" onclick="toggleCheck(this)"><div class="check-icon"></div><b>Step 10:</b> &nbsp;File is saved in .xlsx format and named Sales_Analysis_2024</div>
+  </div>
+
+  <div id="complete-msg" style="display:none;margin-top:1rem">
+    <div class="tip"><i class="ti ti-trophy" aria-hidden="true" style="font-size:16px;flex-shrink:0;margin-top:1px"></i> <b>Excellent work!</b> You've completed the full hands-on Excel Data Analysis lab. You can now collect, clean, calculate, sort, filter, and visualise data like a real data analyst.</div>
+  </div>
+
+  <div class="section-label">Bonus challenge — try these on your own</div>
+  <div class="formula-box">
+    <div class="formula-label">Bonus 1</div>
+    <div class="formula-display">=COUNTIF(B2:B11,"Lagos")</div>
+    <div class="formula-desc">Counts how many reps are in Lagos. Try it for other regions too. <b>COUNTIF</b> counts cells that meet a condition.</div>
+  </div>
+  <div class="formula-box">
+    <div class="formula-label">Bonus 2</div>
+    <div class="formula-display">=SUMIF(C2:C11,"Laptop",F2:F11)</div>
+    <div class="formula-desc">Adds up Total Sales only for Laptop rows. <b>SUMIF</b> is one of the most powerful beginner formulas — condition-based summing.</div>
+  </div>
+  <div class="formula-box">
+    <div class="formula-label">Bonus 3</div>
+    <div class="formula-display">Conditional Formatting</div>
+    <div class="formula-desc">Select F2:F11 → Home → Conditional Formatting → Color Scales. Excel automatically highlights your highest values in green and lowest in red — instant visual ranking without a chart.</div>
+  </div>
+
+  <div class="section-label">Ask your instructor anything about this dataset</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem">
+    <button class="btn" onclick="sendPrompt('I finished the Excel hands-on lab. Can you review my final task answers for the Sales_Analysis_2024 dataset and tell me what total revenue should be and who the top performer is?')">Check my answers ↗</button>
+    <button class="btn" onclick="sendPrompt('Explain SUMIF and COUNTIF to me using the sales dataset with reps like Amaka, Emeka, and James.')">Explain SUMIF & COUNTIF ↗</button>
+    <button class="btn" onclick="sendPrompt('What is Conditional Formatting in Excel and how do I use it to highlight my top 3 sales reps?')">Explain Conditional Formatting ↗</button>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn" onclick="goTo(4)"><i class="ti ti-arrow-left" aria-hidden="true"></i> Back</button>
+    <span style="font-size:13px;color:#1D9E75;font-weight:500"><i class="ti ti-check" aria-hidden="true"></i> Lab complete!</span>
+  </div>
+</div>
+</div>
+
+<script>
+let current = 0;
+const total = 6;
+const done = new Array(total).fill(false);
+
+function goTo(n){
+  done[current] = true;
+  document.getElementById('l'+current).classList.remove('active');
+  document.getElementById('l'+n).classList.add('active');
+  current = n;
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach((t,i)=>{
+    t.classList.remove('active');
+    if(done[i] && i!==n) t.classList.add('done'); else t.classList.remove('done');
+  });
+  tabs[n].classList.add('active');
+  const pct = Math.round(((n+1)/total)*100);
+  document.getElementById('prog').style.width = pct+'%';
+  document.getElementById('prog-label').textContent = 'Lesson '+(n+1)+' of '+total;
+}
+
+function calcTotal(){
+  const u = parseFloat(document.getElementById('units').value)||0;
+  const p = parseFloat(document.getElementById('price').value)||0;
+  const t = u * p;
+  document.getElementById('totalRes').textContent = '₦'+t.toLocaleString('en-NG');
+}
+
+function checkQuiz(btn, verdict, qid){
+  const opts = btn.parentElement.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>{ o.disabled=true; o.classList.remove('correct','wrong'); });
+  btn.classList.add(verdict);
+  const fb = document.getElementById(qid+'fb');
+  fb.style.display='block';
+  if(verdict==='correct'){
+    fb.className='quiz-feedback ok';
+    fb.textContent='Correct! Well done.';
+    if(qid==='q2') fb.textContent='Correct! Names and labels are text — always use General or Text format for them.';
+    if(qid==='q3') fb.textContent='Correct! =SUM(range) adds up everything in that range. It\'s the most-used formula in Excel.';
+    if(qid==='q4') fb.textContent='Correct! Filtering only hides rows temporarily. Your data is safe — just click Clear Filter to show all rows again.';
+    if(qid==='q5') fb.textContent='Correct! Line charts are ideal for showing how a value changes over time — the x-axis represents time, the y-axis the value.';
+  } else {
+    fb.className='quiz-feedback bad';
+    fb.textContent='Not quite — try reading the lesson again and look for the correct answer.';
+  }
+}
+
+function toggleCheck(el){
+  el.classList.toggle('checked');
+  const ico = el.querySelector('.check-icon');
+  ico.textContent = el.classList.contains('checked') ? '✓' : '';
+  // Check if all done on lesson 6
+  if(el.closest('#cl6')){
+    const all = document.querySelectorAll('#cl6 .check-item');
+    const allDone = [...all].every(i=>i.classList.contains('checked'));
+    document.getElementById('complete-msg').style.display = allDone ? 'block' : 'none';
+  }
+}
+</script>
